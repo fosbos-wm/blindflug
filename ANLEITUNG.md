@@ -1,40 +1,38 @@
 # Blindflug – Das Nebelgewölbe (eigene App)
 
-Zwei Teams spielen gleichzeitig auf einem (oder zwei gespiegelten) Monitor(en). Die Pilotin steuert mit dem **Handy** (Steuerkreuz und Zauberknopf), die Navigation hat die Karte auf dem zweiten Handy. Tastatur und Gamepads funktionieren weiterhin.
+Zwei Teams spielen gleichzeitig. Die Pilotin steuert mit dem **Handy** (Steuerkreuz und Zauberknopf), die Navigation hat die Karte auf dem zweiten Handy. Tastatur und Gamepads gehen weiterhin.
 
-## Dateien
-| Datei | Zweck |
-|---|---|
-| `index.html` | Spiel, Handy-Steuerung und Navigator-Karte in einer Datei |
-| `config.js` | **Hier trägst du die Adresse deiner Firebase-Datenbank ein** |
-| `database.rules.json` | Sicherheitsregeln für Firebase (einfügen, siehe Schritt 3) |
-| `js/qr.js`, `js/qr-local.js` | QR-Codes, lokal erzeugt (es wird nichts nachgeladen) |
+## Einrichtung (einmalig)
 
-## Einrichtung (einmalig, ca. 10 Minuten)
+**A) Firebase (ca. 5 Minuten)**
+1. <https://console.firebase.google.com> → „Projekt hinzufügen“ → Name `blindflug` → Google Analytics ausschalten.
+2. Links „Erstellen“ → **Realtime Database** (nicht Firestore) → „Datenbank erstellen“ → Standort **Belgien (europe-west1)** → **gesperrter Modus**.
+3. Reiter **Regeln**: den ganzen Text ersetzen durch den Inhalt von `database.rules.json` → **Veröffentlichen**.
+4. Reiter **Daten**: die Adresse oben kopieren, z. B. `https://blindflug-12345-default-rtdb.europe-west1.firebasedatabase.app`.
 
-1. **Firebase-Projekt anlegen:** <https://console.firebase.google.com> → „Projekt hinzufügen“ → Name z. B. `blindflug` → Google Analytics **ausschalten**. Am besten ein *eigenes* Projekt, nicht das der F11Sb-App.
-2. **Realtime Database erstellen:** links „Erstellen“ → „Realtime Database“ → „Datenbank erstellen“ → Standort **Belgien (europe-west1)** → Start im **gesperrten Modus**.
-3. **Regeln einfügen:** Reiter „Regeln“ → kompletten Inhalt durch `database.rules.json` ersetzen → „Veröffentlichen“. (Mit dem „Regel-Simulator“ kann man prüfen, dass ein Schreibzugriff auf `/blindflug/ABCDE/t0` erlaubt ist, auf `/` aber nicht.)
-4. **Adresse eintragen:** Reiter „Daten“ → oben steht die Adresse, z. B. `https://blindflug-12345-default-rtdb.europe-west1.firebasedatabase.app`. In `config.js` zwischen die Anführungszeichen setzen (ohne `/` am Ende).
-5. **Veröffentlichen:** neues GitHub-Repository `Blindflug`, alle Dateien dieses Ordners hochladen → Settings → Pages → Branch `main`, Ordner `/ (root)`. Die App liegt dann unter `https://<dein-name>.github.io/Blindflug/`.
+**B) GitHub (ca. 3 Minuten)**
+1. Neues Repository `Blindflug` anlegen und **alle Dateien dieses Ordners** hochladen (`index.html`, `config.js`, `database.rules.json`, `ANLEITUNG.md`, Ordner `js`).
+2. Settings → Pages → Branch `main`, Ordner `/ (root)` → Speichern. Nach ein bis zwei Minuten läuft die App unter `https://<dein-name>.github.io/Blindflug/`.
 
-## Ablauf am Spieltag
-1. Aula-Rechner: die Adresse öffnen, **F** für Vollbild.
-2. Pro Team scannt die Pilotin den **QR-Code ihres Teams** – auf dem Handy erscheinen Steuerkreuz und Zauberknopf (Handy quer halten ist am bequemsten). Auf dem Monitor steht dann „Handy verbunden ✓“.
-3. Die Navigatorinnen scannen den **mittleren QR-Code** (Karte) und decken sie erst bei „LOS!“ auf.
-4. „Los!“ drücken. Pause: Esc.
+**C) Adresse eintragen: direkt im Spiel, keine Datei bearbeiten**
+Beim ersten Öffnen zeigt der Startbildschirm ein Feld „Adresse der Firebase-Datenbank eintragen“. Adresse aus A4 einfügen → Speichern. Sie bleibt in diesem Browser gespeichert und wird über die QR-Codes an die Handys weitergegeben. (Alternativ kann sie in `config.js` stehen.)
 
-Reißt die Verbindung ab, stoppt die Figur nach wenigen Sekunden von selbst und der Monitor zeigt „Handy getrennt“. QR-Code neu scannen genügt, oder die Tastatur übernimmt.
+## Am Spieltag
+1. Aula-Rechner: Adresse öffnen, **F** = Vollbild.
+2. Pilot:innen scannen den QR-Code **ihres Teams** (Handy quer halten). Am Monitor erscheint „Handy verbunden ✓“.
+3. Navigator:innen scannen den **mittleren QR-Code** (Karte), aufdecken erst bei „LOS!“.
+4. „Los!“. Pause: Esc.
+
+Reißt die Verbindung ab, bleibt die Figur nach wenigen Sekunden stehen und der Monitor meldet „Handy getrennt“. QR-Code neu scannen genügt. Nach Neuladen der Seite am Rechner ändert sich der Code, dann neu scannen.
 
 ## Datenschutz in Kürze
-- Es gibt keine Konten, Namen oder Geräte-Kennungen. Die Teamnamen bleiben im Browser des Aula-Rechners.
-- Über die Datenbank laufen nur: Richtung („links“, „rechts“ …), ein Zeitstempel für „Zauber“ und „Handy lebt“, der Spielstand („Start/Läuft/Pause/Ende“), das aktuelle Zauber-Symbol und der Sieger (0 oder 1).
-- Jede Runde bekommt einen zufälligen Raumcode (5 Zeichen). Er wird beim Schließen der Seite gelöscht. Falls einmal etwas übrig bleibt: in der Firebase-Konsole unter „Daten“ den Eintrag `blindflug` löschen.
-- Die Daten liegen bei Google (Firebase, Standort EU). Das sollte die Schule kurz mit der/dem Datenschutzbeauftragten abstimmen.
-- Das Spielfeld (Labyrinth) wird aus der Kartennummer berechnet und nicht übertragen.
+- Keine Konten, Namen oder Gerätekennungen. Teamnamen bleiben im Browser des Aula-Rechners.
+- Übertragen werden nur: Richtung, Zeitstempel („Zauber“, „Handy lebt“), Spielstand, Zauber-Symbol, Sieger (0/1).
+- Zufälliger Raumcode (5 Zeichen) pro Sitzung, wird beim Schließen der Seite gelöscht. Reste: in Firebase unter „Daten“ den Eintrag `blindflug` löschen.
+- Daten liegen bei Google (Firebase, EU). Mit der/dem Datenschutzbeauftragten abstimmen.
 
 ## Fehlersuche
-- **„Handy-Steuerung nicht eingerichtet“** → `config.js` ist noch leer.
-- **Handy bleibt auf „Warte auf den Monitor“** → die Seite am Rechner neu laden (neuer Code) und den QR-Code neu scannen; prüfen, ob die Regeln veröffentlicht sind.
-- **Handy verbindet, aber nichts bewegt sich** → Datenbank-Regeln prüfen (Schritt 3), Tippfehler in der Adresse (kein `/` am Ende, `https://`).
-- **Schulnetz blockt** → `*.firebasedatabase.app` muss erreichbar sein. Handys im Mobilfunknetz funktionieren auch, sie brauchen keine Verbindung zum Aula-Rechner.
+- **Feld „Adresse eintragen“ bleibt sichtbar** → Adresse wurde nicht gespeichert (privater Modus?) oder ist falsch.
+- **Handy: „Warte auf den Monitor“** → Seite am Rechner neu laden, QR neu scannen; Regeln veröffentlicht?
+- **Verbunden, aber keine Bewegung** → Regeln (A3) prüfen; Adresse ohne `/` am Ende.
+- **Schulnetz** → `*.firebasedatabase.app` muss erreichbar sein; Handys im Mobilfunknetz gehen auch.

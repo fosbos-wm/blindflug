@@ -108,8 +108,10 @@ button{font:inherit;color:inherit;cursor:pointer}
    <div><b>Navigator:in</b>Hat die ganze Karte mit allen Fallgruben am Handy – sieht aber nicht, wo ihr gerade steht. Sprecht euch ab: „Ich sehe ein goldenes Dreieck!“</div>
    <div><b>Ziel &amp; Zauber</b>Erst fünf Schlüsselrunen einsammeln, dann zum Tresor ★. Zauberkugeln ✦ helfen dir oder bremsen das andere Team. Wer hinten liegt, bekommt Rückenwind. Eine Runde dauert etwa 5–7 Minuten.</div>
   </div>
+  <div class="roles" id="dbSetup" style="grid-template-columns:1fr" hidden><div><b>Einmalig: Adresse der Firebase-Datenbank eintragen</b>Damit die Handys steuern können. Die Adresse steht in Firebase unter Realtime Database → Daten. Sie wird nur in diesem Browser gespeichert. Ohne Eintrag geht das Spiel mit Tastatur oder Gamepad.
+ <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><input id="dbIn" placeholder="https://…-default-rtdb.europe-west1.firebasedatabase.app" autocomplete="off" spellcheck="false" style="flex:1;min-width:260px;font:600 1rem system-ui;padding:9px 12px;border-radius:10px;border:2px solid var(--line);background:#0e0c20;color:var(--fg)"><button type="button" class="b" id="dbSave" style="padding:8px 20px">Speichern</button></div><div id="dbErr" style="color:var(--bad);margin-top:6px"></div></div></div>
   <div class="go"><button type="button" class="b big" id="goBtn">Los!</button><button type="button" class="b alt" id="fsBtn">Vollbild</button><button type="button" class="b alt" id="muteBtn">Ton an</button></div>
-  <div class="tiny">Keine Konten, keine Namen. Über das Netz laufen nur anonyme Befehle wie „links“ oder „Zauber“, sie werden nach dem Spiel gelöscht. Tastatur und Gamepads gehen auch. Pause: Esc · Ton: M · Vollbild: F</div>
+  <div class="tiny">Keine Konten, keine Namen. Über das Netz laufen nur anonyme Befehle wie „links“ oder „Zauber“, sie werden nach dem Spiel gelöscht. Tastatur und Gamepads gehen auch.<span id="dbChg" hidden> · <a href="#" id="dbReset">Datenbank-Adresse ändern</a></span> Pause: Esc · Ton: M · Vollbild: F</div>
  </div>
 </div>
 
@@ -143,7 +145,10 @@ import {DB} from "./config.js";
 const $=id=>document.getElementById(id);
 const q=new URLSearchParams(location.search);
 const ROOM_RE=/^[A-HJ-NP-Z2-9]{5}$/;
-const dbBase=DB?String(DB).replace(/\/+$/,""):"";
+const DBRE=/^https:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*\.(firebasedatabase\.app|firebaseio\.com)$/;
+const lsx={get(k){try{return localStorage.getItem(k)||""}catch(e){return ""}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+const cleanDb=v=>String(v||"").trim().replace(/\/+$/,"");
+const dbBase=[DB,q.get("db"),lsx.get("blindflug-db")].map(cleanDb).find(v=>DBRE.test(v))||"";
 const roomUrl=(raum,p)=>dbBase+"/blindflug/"+raum+(p||"")+".json";
 /* Ereignisse der Firebase-Datenbank (Server-Sent Events) in einen lokalen Baum einarbeiten */
 function applyEv(store,path,data,merge){
@@ -814,7 +819,7 @@ async function showStart(){
   $("kn").textContent=seed;$("qr").innerHTML=await qrSvg(u.href,180);
   for(let i=0;i<2;i++){
     if(!dbBase){$(i?"qB":"qA").innerHTML="";continue}
-    const p=new URL(location.href);p.search="";p.hash="";p.searchParams.set("rolle","steuer");p.searchParams.set("raum",raum);p.searchParams.set("team",i);
+    const p=new URL(location.href);p.search="";p.hash="";p.searchParams.set("rolle","steuer");p.searchParams.set("raum",raum);p.searchParams.set("db",dbBase);p.searchParams.set("team",i);
     $(i?"qB":"qA").innerHTML=await qrSvg(p.href,140);
   }
 }
@@ -829,6 +834,9 @@ $("quitBtn").onclick=()=>{L=null;teams=[];showStart()};
 $("againBtn").onclick=newGame;
 $("newBtn").onclick=()=>{seed=1000+Math.floor(Math.random()*9000);newGame()};
 $("toStartBtn").onclick=()=>{seed=1000+Math.floor(Math.random()*9000);L=null;teams=[];showStart()};
+$("dbSetup").hidden=!!dbBase;$("dbChg").hidden=!lsx.get("blindflug-db")||!dbBase;
+$("dbSave").onclick=()=>{const v=cleanDb($("dbIn").value);if(!DBRE.test(v)){$("dbErr").textContent="Das sieht nicht nach einer Firebase-Adresse aus. Sie beginnt mit https:// und endet auf firebasedatabase.app oder firebaseio.com.";return}lsx.set("blindflug-db",v);location.reload()};
+$("dbReset").onclick=e=>{e.preventDefault();lsx.del("blindflug-db");location.reload()};
 showStart();startLink();
 }
 if(q.get("rolle")==="karte")karteModus();else if(q.get("rolle")==="steuer")steuerModus();else spielModus();
