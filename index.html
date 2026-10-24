@@ -59,10 +59,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 .legend i{display:inline-block;width:20px;height:20px;flex:none}
 @media (max-width:900px){.teams{grid-template-columns:1fr}.roles{grid-template-columns:1fr}.mid{flex-direction:row;gap:14px}}
 
-.pair{display:flex;gap:12px;align-items:center}
-.pair .qr{background:#fff;border-radius:10px;padding:5px;line-height:0;flex:none}
-.pair .qr svg{width:clamp(84px,13vmin,140px);height:clamp(84px,13vmin,140px)}
-.pairtxt{display:flex;flex-direction:column;gap:3px;font-size:clamp(12px,1.8vmin,17px);color:var(--muted)}
+#start .card{width:min(1760px,100%)}
+#start .ctl{display:none}
+#start .teams{grid-template-columns:1fr auto 1fr;gap:clamp(16px,5vw,120px)}
+.pair{display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.pair .qr{background:#fff;border-radius:14px;padding:8px;line-height:0;flex:none}
+.pair .qr svg{width:clamp(120px,24vmin,330px);height:clamp(120px,24vmin,330px)}
+.mid .qr svg{width:clamp(120px,24vmin,330px)!important;height:clamp(120px,24vmin,330px)!important}
+.mid{min-width:clamp(200px,32vmin,380px)}
+.pairtxt{display:flex;flex-direction:column;gap:3px;font-size:clamp(13px,2vmin,19px);color:var(--muted)}
 .pairtxt b{color:var(--fg)}
 .conn{font-weight:800;color:var(--bad)}.conn.ok{color:var(--ok)}
 /* Handy-Steuerung */
@@ -111,7 +116,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   <div class="roles" id="dbSetup" style="grid-template-columns:1fr" hidden><div><b>Einmalig: Adresse der Firebase-Datenbank eintragen</b>Damit die Handys steuern können. Die Adresse steht in Firebase unter Realtime Database → Daten. Sie wird nur in diesem Browser gespeichert. Ohne Eintrag geht das Spiel mit Tastatur oder Gamepad.
  <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><input id="dbIn" placeholder="https://…-default-rtdb.europe-west1.firebasedatabase.app" autocomplete="off" spellcheck="false" style="flex:1;min-width:260px;font:600 1rem system-ui;padding:9px 12px;border-radius:10px;border:2px solid var(--line);background:#0e0c20;color:var(--fg)"><button type="button" class="b" id="dbSave" style="padding:8px 20px">Speichern</button></div><div id="dbErr" style="color:var(--bad);margin-top:6px"></div></div></div>
   <div class="go"><button type="button" class="b big" id="goBtn">Los!</button><button type="button" class="b alt" id="fsBtn">Vollbild</button><button type="button" class="b alt" id="muteBtn">Ton an</button></div>
-  <div class="tiny">Keine Konten, keine Namen. Über das Netz laufen nur anonyme Befehle wie „links“ oder „Zauber“, sie werden nach dem Spiel gelöscht. Tastatur und Gamepads gehen auch.<span id="dbChg" hidden> · <a href="#" id="dbReset">Datenbank-Adresse ändern</a></span> Pause: Esc · Ton: M · Vollbild: F</div>
+  <div class="tiny">Keine Konten, keine Namen. Über das Netz laufen nur anonyme Befehle wie „links“ oder „Zauber“, sie werden nach dem Spiel gelöscht. Ohne Handy: links W A S D + E, rechts Pfeiltasten + Shift rechts, oder Gamepads.<span id="dbChg" hidden> · <a href="#" id="dbReset">Datenbank-Adresse ändern</a></span> Pause: Esc · Ton: M · Vollbild: F</div>
  </div>
 </div>
 
