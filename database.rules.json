@@ -1,0 +1,33 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "blindflug": {
+      "$raum": {
+        ".read": true,
+        ".write": true,
+        ".validate": "$raum.matches(/^[A-HJ-NP-Z2-9]{5}$/)",
+        "t0": {
+          "d":  { ".validate": "newData.isString() && newData.val().matches(/^(up|down|left|right)?$/)" },
+          "z":  { ".validate": "newData.isNumber()" },
+          "hb": { ".validate": "newData.isNumber()" },
+          "$andere": { ".validate": false }
+        },
+        "t1": {
+          "d":  { ".validate": "newData.isString() && newData.val().matches(/^(up|down|left|right)?$/)" },
+          "z":  { ".validate": "newData.isNumber()" },
+          "hb": { ".validate": "newData.isNumber()" },
+          "$andere": { ".validate": false }
+        },
+        "g": {
+          "s": { ".validate": "newData.isString() && newData.val().matches(/^(start|count|play|pause|end)$/)" },
+          "a": { ".validate": "newData.isString() && newData.val().matches(/^(nebel|spiegel|frost|sprint|licht|tausch)?$/)" },
+          "b": { ".validate": "newData.isString() && newData.val().matches(/^(nebel|spiegel|frost|sprint|licht|tausch)?$/)" },
+          "w": { ".validate": "newData.isNumber()" },
+          "$andere": { ".validate": false }
+        },
+        "$sonst": { ".validate": false }
+      }
+    }
+  }
+}
