@@ -475,11 +475,11 @@ function speedOf(t){
   return s;
 }
 function radiusOf(t){
-  let r=2.7;if(gapOf(t.i)>=12)r+=.6;
+  let r=1.8;if(gapOf(t.i)>=12)r+=.4;
   if(t.fx.nebel>0)r*=.5;if(t.fx.licht>0)r*=1.7;
   if(G.chaos&&G.chaos.kind==="nebelsturm"&&G.chaos.t>0)r*=.65;
   if(G.chaos&&G.chaos.kind==="mondschein"&&G.chaos.t>0)r*=1.5;
-  return Math.max(1.3,r);
+  return Math.max(1.1,r);
 }
 function banner(txt,sub,col,panel,dur){G.banners.push({txt,sub,col,panel,t:dur||2.2,dur:dur||2.2});if(G.banners.length>6)G.banners.shift()}
 function giveSpell(t,fromChaos){
@@ -736,13 +736,13 @@ function drawPanel(c,t,px,py,pw,ph,time){
   const oc=o.getContext("2d");oc.globalCompositeOperation="source-over";oc.clearRect(0,0,pw,ph);oc.fillStyle="rgba(5,5,14,.985)";oc.fillRect(0,0,pw,ph);
   oc.globalCompositeOperation="destination-out";
   const flick=1+Math.sin(time*7+t.i)*.015,rad=R*ts*flick,g=oc.createRadialGradient(px0,py0,rad*.25,px0,py0,rad);
-  g.addColorStop(0,"rgba(0,0,0,1)");g.addColorStop(.62,"rgba(0,0,0,.92)");g.addColorStop(1,"rgba(0,0,0,0)");
+  g.addColorStop(0,"rgba(0,0,0,1)");g.addColorStop(.5,"rgba(0,0,0,.9)");g.addColorStop(1,"rgba(0,0,0,0)");
   oc.fillStyle=g;oc.beginPath();oc.arc(px0,py0,rad,0,6.3);oc.fill();
   c.drawImage(o,0,0);
   /* Runen glimmen weit durch den Nebel, das Tresor-Licht noch weiter */
   const gl=(x,y,maxR)=>{const d=Math.hypot(x-fx,y-fy);return d<maxR?Math.min(1,(maxR-d)/2.2):0};
-  L.runes.forEach(u=>{const a=gl(u.x,u.y,u.key?8.5:6.5);if(a<=0)return;c.globalAlpha=a*(.75+.25*Math.sin(time*3+u.x));drawRune(c,u,ox+(u.x+.5)*ts,oy+(u.y+.5)*ts,ts*.3,ts*.5);c.globalAlpha=1});
-  L.keyIdx.forEach((ri,ki)=>{const u=L.runes[ri];if(t.keys.has(ki))return;const a=gl(u.x,u.y,8.5);if(a<=0)return;c.save();c.globalAlpha=a;c.strokeStyle="#fff7c2";c.lineWidth=ts*.07;c.beginPath();c.arc(ox+(u.x+.5)*ts,oy+(u.y+.5)*ts,ts*.46+Math.sin(time*5)*ts*.03,0,6.3);c.stroke();c.restore()});
+  L.runes.forEach(u=>{const a=gl(u.x,u.y,u.key?6.5:4.5);if(a<=0)return;c.globalAlpha=a*(.75+.25*Math.sin(time*3+u.x));drawRune(c,u,ox+(u.x+.5)*ts,oy+(u.y+.5)*ts,ts*.3,ts*.5);c.globalAlpha=1});
+  L.keyIdx.forEach((ri,ki)=>{const u=L.runes[ri];if(t.keys.has(ki))return;const a=gl(u.x,u.y,6.5);if(a<=0)return;c.save();c.globalAlpha=a;c.strokeStyle="#fff7c2";c.lineWidth=ts*.07;c.beginPath();c.arc(ox+(u.x+.5)*ts,oy+(u.y+.5)*ts,ts*.46+Math.sin(time*5)*ts*.03,0,6.3);c.stroke();c.restore()});
   const ga=gl(L.goal[0],L.goal[1],9);
   if(ga>0){c.save();c.globalAlpha=ga;const open=t.keys.size>=NK;c.shadowColor=open?"#f2c14e":"#6c6a8a";c.shadowBlur=ts*.9;c.fillStyle=open?"#f2c14e":"#7d7aa0";drawStar(c,ox+(L.goal[0]+.5)*ts,oy+(L.goal[1]+.5)*ts,ts*.46+Math.sin(time*4)*ts*.03);c.fill();c.restore()}
   /* Effekte */
